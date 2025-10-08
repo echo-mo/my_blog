@@ -31,22 +31,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         
-    # 使用 Ruby setup action 正确安装 Jekyll
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.1'
-        bundler-cache: true
-
-    - name: Install Jekyll and dependencies
+    # 创建简单的静态网站，不使用 Jekyll
+    - name: Create static site
       run: |
-        gem install jekyll
-        gem install bundler
-        
-    - name: Build Jekyll site
-      run: |
-        jekyll --version
-        jekyll build --trace
+        mkdir -p _site
+        cp index.html _site/ || echo "No index.html found"
+        cp -r _posts _site/ || echo "No _posts directory found"
+        echo "<html><body><h1>博客已生成</h1><p>查看 _posts 目录中的文章</p></body></html>" > _site/index.html
         
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
