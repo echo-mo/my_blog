@@ -31,18 +31,27 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         
-    # 使用 GitHub 官方的 Pages 构建 Action
-    - name: Setup Pages
-      uses: actions/configure-pages@v3
-      
-    - name: Build with Jekyll
-      uses: actions/jekyll-build-pages@v1
+    # 使用 Ruby setup action 正确安装 Jekyll
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
       with:
-        source: ./
-        destination: ./_site
+        ruby-version: '3.1'
+        bundler-cache: true
+
+    - name: Install Jekyll and dependencies
+      run: |
+        gem install jekyll
+        gem install bundler
+        
+    - name: Build Jekyll site
+      run: |
+        jekyll --version
+        jekyll build --trace
         
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
+      with:
+        path: _site/
         
   deploy:
     environment:
