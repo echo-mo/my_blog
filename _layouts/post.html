@@ -1,0 +1,16 @@
+---
+layout: default
+---
+<article class="post">
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+        发布于 {{ page.date | date: "%Y年%m月%d日" }}
+        {% if page.issue_url %}
+        | <a href="{{ page.issue_url }}" target="_blank">查看原文</a>
+        {% endif %}
+    </div>
+
+    <div class="post-content">
+        {{ content }}
+    </div>
+</article>

@@ -1,18 +1,38 @@
-title: "我的 GitHub 博客"
-description: "使用 GitHub Issues 生成的博客"
+title: "我的博客"
+description: "通过 GitHub Issues 自动生成的博客"
 baseurl: ""
 url: "https://echo-mo.github.io"
-github_username: echo-mo
+github_username: "echo-mo"
 
-# theme: minima
-theme: null
-plugins:
-  - jekyll-feed
+# 使用 GitHub Pages 支持的简单主题
+remote_theme: pages-themes/cayman@v0.2.0
 
+# 构建设置
 markdown: kramdown
+highlighter: rouge
 permalink: pretty
 
+plugins:
+  - jekyll-feed
+  - jekyll-remote-theme
+
+# 集合设置
 collections:
   posts:
     output: true
-    permalink: /blog/:path/
+    permalink: /:year/:month/:day/:title/
+
+# 默认设置
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+# 排除文件
+exclude:
+  - scripts
+  - .github
+  - Gemfile
+  - Gemfile.lock
