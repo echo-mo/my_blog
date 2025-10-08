@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
+
 import os
 import re
 from datetime import datetime
@@ -10,27 +11,27 @@ def sanitize_filename(title):
     # 将空格替换为短横线，并转换为小写
     return cleaned_title.strip().replace(' ', '-').lower()
 
-def generate_post(issue_number, issue_title, issue_body):
+def generate_post(i_issue_number, i_issue_title, i_issue_body):
     # 获取当前日期
     today = datetime.now().strftime("%Y-%m-%d")
 
     # 生成文件名：日期-标题.md
-    filename = f"{today}-{sanitize_filename(issue_title)}.md"
+    filename = f"{today}-{sanitize_filename(i_issue_title)}.md"
     filepath = f"_posts/{filename}"
 
     # 创建 Front Matter（Jekyll 的文章头信息）
     front_matter = f"""---
 layout: post
-title: "{issue_title}"
+title: "{i_issue_title}"
 date: {today}
-issue_id: {issue_number}
+issue_id: {i_issue_number}
 categories: blog
 ---
 
 """
 
     # 组合完整内容：Front Matter + 文章正文
-    content = front_matter + issue_body
+    content = front_matter + i_issue_body
 
     # 确保 _posts 目录存在
     os.makedirs("_posts", exist_ok=True)

@@ -36,17 +36,10 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Install Jekyll dependencies
-<<<<<<< HEAD
-      run: |
-        gem install jekyll
-        gem install webrick
-
-=======
         run: |
           gem install jekyll
           gem install webrick
-          
->>>>>>> 537d49c21ce0a1ec488cb554ada33e8959aa9419
+
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
