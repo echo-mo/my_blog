@@ -26,7 +26,7 @@ jobs:
       run: pip install PyGithub
         
     - name: Generate blog posts from issues
-      run: python scripts/issue_to_post.py
+      run: python .github/scripts/issue_to_post.py
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
