@@ -34,7 +34,12 @@ jobs:
           
       - name: Setup Pages
         uses: actions/configure-pages@v3
-        
+
+      - name: Install Jekyll dependencies
+        run: |
+          gem install jekyll
+          gem install webrick
+          
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
@@ -42,7 +47,7 @@ jobs:
           destination: ./_site
           
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
 
   deploy:
     environment:
