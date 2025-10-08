@@ -1,4 +1,4 @@
-name: Build Blog from Issues
+name: Deploy Blog from Issues to GitHub Pages
 
 on:
   issues:
