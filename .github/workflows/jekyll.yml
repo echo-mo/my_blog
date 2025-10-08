@@ -1,20 +1,14 @@
 name: Build Blog from Issues
 
 on:
-  push:
-    branches: ["main"]  # 添加 push 触发器
   issues:
     types: [opened, edited, labeled]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
   build:
@@ -22,8 +16,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # 明确指定 token
       
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -34,48 +26,18 @@ jobs:
       run: pip install PyGithub
         
     - name: Generate blog posts from issues
-      if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'blog')  # 添加条件判断
       run: python .github/scripts/issue_to_post.py
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         
+    # 创建简单的静态网站，不使用 Jekyll
     - name: Create static site
       run: |
         mkdir -p _site
-        # 创建更完整的首页
-        echo "<!DOCTYPE html>
-        <html lang='zh-CN'>
-        <head>
-          <meta charset='UTF-8'>
-          <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-          <title>我的博客</title>
-          <style>
-            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
-            .post { border: 1px solid #ddd; padding: 20px; margin: 10px 0; border-radius: 5px; }
-          </style>
-        </head>
-        <body>
-          <h1>我的博客</h1>
-          <p>通过 GitHub Issues 自动生成</p>
-          <div id='posts'>
-            <p>文章列表将在这里显示...</p>
-          </div>
-        </body>
-        </html>" > _site/index.html
-        
-        # 复制文章目录
-        if [ -d "_posts" ] && [ "$(ls -A _posts)" ]; then
-          cp -r _posts _site/
-          echo "成功复制博客文章到 _site/"
-        else
-          echo "没有找到博客文章，创建示例文章"
-          mkdir -p _site/_posts
-          echo \"---\nlayout: post\ntitle: 欢迎来到我的博客\ndate: $(date +%Y-%m-%d)\n---\n\n这是第一篇示例文章。\" > _site/_posts/welcome.md
-        fi
-        
-    - name: Setup Pages
-      uses: actions/configure-pages@v3  # 添加配置步骤
+        cp index.html _site/ || echo "No index.html found"
+        cp -r _posts _site/ || echo "No _posts directory found"
+        echo "<html><body><h1>博客已生成</h1><p>查看 _posts 目录中的文章</p></body></html>" > _site/index.html
         
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
