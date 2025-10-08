@@ -34,9 +34,11 @@ jobs:
           ISSUE_TITLE: '${{ github.event.issue.title }}'
           ISSUE_BODY: '${{ github.event.issue.body }}'
 
-      - name: Setup Jekyll
+      - name: Setup Jekyll with Bundler
         run: |
-          gem install jekyll webrick
+            gem install bundler
+            bundle config set --local path 'vendor/bundle'
+            bundle install
 
       - name: Build site
         run: |
