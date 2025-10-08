@@ -5,6 +5,7 @@ url: "https://echo-mo.github.io"
 github_username: echo-mo
 
 # theme: minima
+theme: null
 plugins:
   - jekyll-feed
 
