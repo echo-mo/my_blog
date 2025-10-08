@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Generate blog post from issue
         if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'blog')
         run: |
@@ -31,18 +31,23 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: '${{ github.event.issue.title }}'
           ISSUE_BODY: '${{ github.event.issue.body }}'
-          
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
-        
+
+      - name: Install Jekyll dependencies
+      run: |
+        gem install jekyll
+        gem install webrick
+
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./
           destination: ./_site
-          
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
 
   deploy:
     environment:

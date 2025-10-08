@@ -1,10 +1,10 @@
 title: "我的 GitHub 博客"
 description: "使用 GitHub Issues 生成的博客"
 baseurl: ""
-url: "https://你的用户名.github.io"
-github_username: 你的用户名
+url: "https://echo-mo.github.io"
+github_username: echo-mo
 
-theme: minima
+# theme: minima
 plugins:
   - jekyll-feed
 

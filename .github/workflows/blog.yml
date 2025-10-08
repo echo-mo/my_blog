@@ -9,16 +9,16 @@ jobs:
   generate-blog:
     runs-on: ubuntu-latest
     if: contains(github.event.issue.labels.*.name, 'blog')
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      
+
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
-        
+
     - name: Generate blog post
       run: |
         python .github/scripts/generate_post.py
@@ -27,17 +27,17 @@ jobs:
         ISSUE_NUMBER: ${{ github.event.issue.number }}
         ISSUE_TITLE: '${{ github.event.issue.title }}'
         ISSUE_BODY: '${{ github.event.issue.body }}'
-        
+
     - name: Setup Jekyll
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.1'
-        
+
     - name: Build site
       run: |
         gem install jekyll
         jekyll build
-        
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
