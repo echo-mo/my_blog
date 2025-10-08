@@ -1,14 +1,12 @@
-name: Deploy Blog to GitHub Pages
+name: Build Blog from Issues
 
 on:
-  push:
-    branches: ["main"]
   issues:
     types: [opened, edited, labeled]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -16,37 +14,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
         
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: Generate blog posts
-        if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'blog')
-        run: |
-          echo "生成博客文章..."
-          python .github/scripts/generate_post.py
-        env:
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: '${{ github.event.issue.title }}'
-          ISSUE_BODY: '${{ github.event.issue.body }}'
-          
-      - name: Setup Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-            source: ./
-            destination: ./_site
-
-      - name: Build site
-        run: |
-          jekyll build --trace
-
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
-
+    - name: Install Python dependencies
+      run: pip install PyGithub
+        
+    - name: Generate blog posts from issues
+      run: python scripts/issue_to_post.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        
+    # 使用 GitHub 官方的 Pages 构建 Action
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+      
+    - name: Build with Jekyll
+      uses: actions/jekyll-build-pages@v1
+      with:
+        source: ./
+        destination: ./_site
+        
+    - name: Upload pages artifact
+      uses: actions/upload-pages-artifact@v3
+        
   deploy:
     environment:
       name: github-pages
